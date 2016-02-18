@@ -1,0 +1,8 @@
+html, body {
+    font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5em !important;
+    width: 976px;
+    margin: auto;
+    position: relative;
+}

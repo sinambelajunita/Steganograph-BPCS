@@ -41,4 +41,24 @@ public class Tools {
     public static File pngWriter(String path, byte[] bytes){
         
     }
+    
+    public static double calculatePSNR(BufferedImage imageMatrix1, BufferedImage imageMatrix2) {
+        int total = 0;
+        int row;
+        int col;
+
+        row = imageMatrix1.getHeight();
+        col = imageMatrix1.getWidth();
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                total += (imageMatrix1.getRGB(i,j) - imageMatrix2.getRGB(i,j))*(imageMatrix1.getRGB(i,j) - imageMatrix2.getRGB(i,j));
+                //System.out.println(i + " " + " " + j + " " +  total);
+            }
+        }
+
+        double rms = Math.sqrt(total/(row*col));
+
+        double result = 20*Math.log10(256/rms);
+        return result;
+    }
 }

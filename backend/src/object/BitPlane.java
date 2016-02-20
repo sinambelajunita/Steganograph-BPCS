@@ -101,21 +101,29 @@ public class BitPlane {
     }
     
     public void convertToCGC() {
+        BitPlane CGC = new BitPlane();
         for(int i=0; i<8; i++) {
-            for(int j=1; j<8; j++) {
-                int res = this.getBit(i, j-1) ^ this.getBit(i, j);
-                this.setBit(i, j, res);
+            for(int j=0; j<8; j++) {
+                if(j==0)
+                    CGC.setBit(i, j, this.getBit(i, j));
+                else
+                    CGC.setBit(i, j, this.getBit(i, j-1)^this.getBit(i, j));
             }
         }
+        this.setBitMatrix(CGC.getBitMatrix());
     }
     
     public void convertToPCB() {
+        BitPlane PCB = new BitPlane();
         for(int i=0; i<8; i++) {
-            for(int j=1; j<8; j++) {
-                int res = this.getBit(i, j-1) ^ this.getBit(i, j);
-                this.setBit(i, j, res);
+            for(int j=0; j<8; j++) {
+                if(j==0)
+                    PCB.setBit(i, j, this.getBit(i, j));
+                else
+                    PCB.setBit(i, j, PCB.getBit(i, j-1)^this.getBit(i, j));
             }
         }
+        this.setBitMatrix(PCB.getBitMatrix());
     }
     
 }

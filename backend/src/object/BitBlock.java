@@ -6,10 +6,10 @@ import java.util.Arrays;
  *
  * @author hp
  */
-public class BitBlocks {
+public class BitBlock {
     private BitPlane[] bitplanes;
     
-    public BitBlocks() {
+    public BitBlock() {
         this.bitplanes = new BitPlane[32];
         for(int i=0; i<32; i++) {
             this.bitplanes[i] = new BitPlane();

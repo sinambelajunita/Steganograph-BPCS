@@ -3,7 +3,6 @@ package test;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import object.BitBlocks;
@@ -35,10 +34,8 @@ public class Test {
         //2. Bentuk setiap blok 8 x 8 pixel menjadi sistem PBC yang terdiri dari 24 buah bit-plane.
         int height = image.getHeight();
         int width = image.getWidth();
-        System.out.println("height = " + height + ", width = " + width + "\n");
         int nrow = height / 8;
         int ncol = width / 8;
-        System.out.println("nrow = " + nrow + ", ncol = " + ncol + "\n");
         BitBlocks[][] bitblocks = new BitBlocks[nrow][ncol];
         for(int row=0; row<nrow; row++) {
             for(int col=0; col<ncol; col++) {
@@ -47,8 +44,7 @@ public class Test {
                 
                 for(int i=0; i<8; i++) {
                     for(int j=0; j<8; j++) {
-                        System.out.println(row*8 + i + " " + col*8 + j);
-                        int color = image.getRGB((row*8)+i, (col*8)+j) & 0xFFFFFF;
+                        int color = image.getRGB((col*8)+j, (row*8)+i);
                         intMatrix[i][j] = color;
                     }
                 }
@@ -60,7 +56,7 @@ public class Test {
         // 3. Ubah sistem PBC menjadi sistem CGC(Canonical Gray Coding).
         for(int row=0; row<nrow; row++) {
             for(int col=0; col<ncol; col++) {
-                bitblocks[row][col].convertAllToCGC();
+                //bitblocks[row][col].convertAllToCGC();
             }
         }
         
@@ -97,9 +93,7 @@ public class Test {
         // (yaitu termasuk kategori informative region), lakukan konyugasi terhadap S 
         // untuk mendapatkan S* yang lebih kompleks.
         for(int i=0; i<size; i++) {
-            if (!messageblocks.getBitPlane(i).isComplex(threshold)) {
-                //int[] matrix = messageblocks.getBitPlane(i).getBitMatrix();
-                //System.out.println(Arrays.toString(matrix));
+            if ( ! messageblocks.getBitPlane(i).isComplex(threshold)) {
                 BitPlane conjugate = messageblocks.getBitPlane(i);
                 messageblocks.getBitPlane(i).setBitMatrix(conjugate.getBitMatrix());
             }
@@ -115,23 +109,22 @@ public class Test {
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.
         for(int row=0; row<nrow; row++) {
             for(int col=0; col<ncol; col++) {
-                bitblocks[row][col].convertAllToPCB();
+                //bitblocks[row][col].convertAllToPCB();
             }
         }
         
         // Konversi ke bitmap
-        BufferedImage imageresult = new BufferedImage(8*nrow,8*ncol, BufferedImage.TYPE_INT_RGB);
+        BufferedImage imageresult = new BufferedImage(8*ncol, 8*nrow,  BufferedImage.TYPE_INT_RGB);
         for(int row=0; row<nrow; row++) {
             for(int col=0; col<ncol; col++) {
                 BitBlocks bitblocksresult = bitblocks[row][col];
                 int[][] colormatrix = bitblocksresult.getColorMatrix();
                 for(int i=0; i<8; i++) {
                     for(int j=0; j<8; j++) {
-                        int color = 0xFF000000 | colormatrix[i][j];
-                        imageresult.setRGB(row*8 + i, col*8 + j, color);
+                        int color = colormatrix[i][j];
+                        imageresult.setRGB(col*8 + j, row*8 + i, color);
                     }
                 }
-                
             }
         }
         

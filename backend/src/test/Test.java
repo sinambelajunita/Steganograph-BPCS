@@ -56,7 +56,7 @@ public class Test {
         // 3. Ubah sistem PBC menjadi sistem CGC(Canonical Gray Coding).
         for(int row=0; row<nrow; row++) {
             for(int col=0; col<ncol; col++) {
-                //bitblocks[row][col].convertAllToCGC();
+                bitblocks[row][col].convertAllToCGC();
             }
         }
         
@@ -109,7 +109,7 @@ public class Test {
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.
         for(int row=0; row<nrow; row++) {
             for(int col=0; col<ncol; col++) {
-                //bitblocks[row][col].convertAllToPCB();
+                bitblocks[row][col].convertAllToPCB();
             }
         }
         

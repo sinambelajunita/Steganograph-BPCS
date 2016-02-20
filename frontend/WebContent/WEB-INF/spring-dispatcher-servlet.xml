@@ -12,6 +12,7 @@
 	
  <context:component-scan base-package="com.kriptoproject.controller" />
  <context:component-scan base-package="com.tugas1.controller" />
+ <context:component-scan base-package="com.tubes1.controller" />
  
  <mvc:annotation-driven/>
  

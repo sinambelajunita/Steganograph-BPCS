@@ -38,9 +38,9 @@ public class Tools {
         }
         return bos == null ? null : bos.getBytes();
     }
-    public static File pngWriter(String path, byte[] bytes){
-        
-    }
+//    public static File pngWriter(String path, byte[] bytes){
+//        
+//    }
     
     public static double calculatePSNR(BufferedImage imageMatrix1, BufferedImage imageMatrix2) {
         int total = 0;

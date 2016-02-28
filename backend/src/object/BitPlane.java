@@ -129,4 +129,29 @@ public class BitPlane {
         this.setBitMatrix(PCB.getBitMatrix());
     }
     
+    public Boolean isConjugated() {
+        return (this.getBit(0, 0)==1);
+    }
+    
+    public Boolean isIdentity() {
+        Boolean identity = true;
+        for(int i=0; i<8; i++) {
+            if (matrix[i] != 0) {
+                identity = false;
+                break;
+            }
+        }
+        return identity;
+    }
+    
+    public void print() {
+        for(int i=0; i<8; i++) {
+            for(int j=0; j<8; j++) {
+                System.out.print(this.getBit(i, j));
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+    
 }

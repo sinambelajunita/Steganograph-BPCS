@@ -17,23 +17,33 @@ public class MessageBlock {
     int size;
     
     public MessageBlock() {
-        size = 0;
-        bitplanes = null;
+        this.size = 0;
+        this.bitplanes = null;
     }
     
     public MessageBlock(int n) {
-        size = n;
-        bitplanes = new BitPlane[size];
+        this.size = n;
+        this.bitplanes = new BitPlane[size];
         for(int i=0; i<size; i++) {
-            bitplanes[i] = new BitPlane();
+            this.bitplanes[i] = new BitPlane();
         }
     }
     
-    public MessageBlock(BitPlane[] bitplanes) {
-        size = bitplanes.length;
-        bitplanes = new BitPlane[size];
+    public MessageBlock(BitPlane[] otherbitplanes) {
+        this.size = otherbitplanes.length;
+        this.bitplanes = new BitPlane[size];
         for(int i=0; i<size; i++) {
-            bitplanes[i].setBitMatrix(bitplanes[i].getBitMatrix());
+            this.bitplanes[i] = new BitPlane();
+            this.bitplanes[i].setBitMatrix(otherbitplanes[i].getBitMatrix());
+        }
+    }
+    
+    public MessageBlock(ArrayList<BitPlane> otherbitplanes) {
+        this.size = otherbitplanes.size();
+        this.bitplanes = new BitPlane[size];
+        for(int i=0; i<this.size; i++) {
+            this.bitplanes[i] = new BitPlane();
+            this.bitplanes[i].setBitMatrix(otherbitplanes.get(i).getBitMatrix());
         }
     }
     
@@ -54,7 +64,7 @@ public class MessageBlock {
         }
         
         int total = it;
-        this.size = (total+63)/64; // ceil(total/64)
+        this.size = (total+63)/64 + 1; // ceil(total/64) + 1(bitplane kosong)
         
         this.bitplanes = new BitPlane[this.size];
         it=0;
@@ -95,16 +105,30 @@ public class MessageBlock {
     }
     
     // ubah messageblock ke array of byte message
+    // TODO benerin
     public byte[] toBytes(){
-        byte[] bytes = new byte[size*8];
-        for(int i=0; i<size; i++) {
+        ArrayList<Boolean> bitbool = new ArrayList<Boolean>();
+        for(int i=0; i<this.size; i++) {
             int[] matrix = bitplanes[i].getBitMatrix();
-            for(int j=0; j<8; j++) {
-                if(8*i+j<bytes.length) {
-                    bytes[8*i+j] = (byte)(matrix[j]);
+            for(int j=0; j<8; j++){
+                for(int k=0; k<8; k++){ 
+                    if(j+k > 0) {
+                        int bit = (matrix[j] & (1<<k)) >> k;
+                        bitbool.add(bit==1);
+                    }
                 }
             }
         }
+        
+        int bytesize = bitbool.size()/8;
+        byte[] bytes = new byte[bytesize];
+        for(int i=0; i<bytesize; i++) {
+            bytes[i] = 0;
+            for(int j=0; j<8; j++) {
+                bytes[i] = (byte) (((bitbool.get(8*i+j)?1:0) << j) | bytes[i]);
+            }
+        }
+        
         return bytes;
     }
 }

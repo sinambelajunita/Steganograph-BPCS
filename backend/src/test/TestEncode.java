@@ -78,19 +78,21 @@ public class TestEncode {
         ArrayList posgenerated;
         posgenerated = new ArrayList<>();
         BitPlane bitplane;
+        int position;
         for(int i=0; i<messageblock.getSize(); i++) {
             boolean found = false;
             do {
-                int position = generator.nextInt(imageblock.getMaxBitPlanes());
-                System.out.println(position);
+                position = generator.nextInt(imageblock.getMaxBitPlanes());
+                //System.out.println(position);
                 bitplane = imageblock.getBitPlane(position);
-                System.out.println(bitplane.isComplex(threshold));
+                //System.out.println(bitplane.isComplex(threshold));
                 if(bitplane.isComplex(threshold) && !posgenerated.contains(position)) {
                     found = true;
                 }
             } while(!found);
-            
+            posgenerated.add(position);
             bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
+            messageblock.getBitPlane(i).print();
         }
             
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.

@@ -63,14 +63,12 @@ public class MessageBlock {
     public byte[] toBytes(){
         byte[] bytes = new byte[size*8];
         for(int i=0; i<size; i++) {
-            bitplanes[i] = new BitPlane();
-            int[] matrix = new int[8];
+            int[] matrix = bitplanes[i].getBitMatrix();
             for(int j=0; j<8; j++) {
                 if(8*i+j<bytes.length) {
-                    matrix[j] = (int)(bytes[8*i+j]);
+                    bytes[8*i+j] = (byte)(matrix[j]);
                 }
             }
-            bitplanes[i].setBitMatrix(matrix);
         }
         return bytes;
     }

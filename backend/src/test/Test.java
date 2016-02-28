@@ -3,9 +3,9 @@ package test;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
-import object.BitBlock;
 import object.BitPlane;
 import object.ImageBlock;
 import object.MessageBlock;
@@ -52,12 +52,12 @@ public class Test {
         message = scanner.nextLine();
         MessageBlock messageblock = null; //new MessageBlock(message.charAt(capacity));
         
-        
         // 6. Jika blok pesan S tidak lebih kompleks dibandingkan dengan nilai ambang a_0
         // (yaitu termasuk kategori informative region), lakukan konyugasi terhadap S 
         // untuk mendapatkan S* yang lebih kompleks.
         for(int i=0; i<messageblock.getSize(); i++) {
             BitPlane bitplane = messageblock.getBitPlane(i);
+            
             if ( ! bitplane.isComplex(threshold)) {
                 BitPlane conjugate = bitplane.getConjugate();
                 bitplane.setBitMatrix(conjugate.getBitMatrix());

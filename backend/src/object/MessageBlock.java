@@ -21,16 +21,16 @@ public class MessageBlock {
         }
     }
     
-    public MessageBlock(String s) {
-        int length = s.length();
+    public MessageBlock(byte[] bytes) {
+        int length = bytes.length;
         this.size = (length+7)/8;
         bitplanes = new BitPlane[this.size];
         for(int i=0; i<size; i++) {
             bitplanes[i] = new BitPlane();
             int[] matrix = new int[8];
             for(int j=0; j<8; j++) {
-                if(8*i+j<s.length()) {
-                    matrix[j] = (int)(s.charAt(8*i+j));
+                if(8*i+j<bytes.length) {
+                    matrix[j] = (int)(bytes[8*i+j]);
                 }
             }
             bitplanes[i].setBitMatrix(matrix);

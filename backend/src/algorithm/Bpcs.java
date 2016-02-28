@@ -21,7 +21,7 @@ import tools.Tools;
  * @author user
  */
 public class Bpcs {
-    public String encrypt(String imagepath, String message, String key){
+    public String encrypt(String imagepath, byte[] message, String key){
         ArrayList conjugationmap;
         conjugationmap = new ArrayList<>();
         BufferedImage image = null;

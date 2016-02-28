@@ -57,15 +57,33 @@ public class Test {
         // (yaitu termasuk kategori informative region), lakukan konyugasi terhadap S 
         // untuk mendapatkan S* yang lebih kompleks.
         for(int i=0; i<messageblock.getSize(); i++) {
-            if ( ! messageblock.getBitPlane(i).isComplex(threshold)) {
-                BitPlane conjugate = messageblock.getBitPlane(i);
-                messageblock.getBitPlane(i).setBitMatrix(conjugate.getBitMatrix());
+            BitPlane bitplane = messageblock.getBitPlane(i);
+            if ( ! bitplane.isComplex(threshold)) {
+                BitPlane conjugate = bitplane.getConjugate();
+                bitplane.setBitMatrix(conjugate.getBitMatrix());
             }
         }
         
         // 7. Sisipkan segmen pesan 64-bit ke bit-plane yang merupakan noise-like region
         // dengan cara mengganti seluruh bit pada noise-like region tersebut dengan 64-bit pesan).
-        // TODO Sisipkan pesan
+        int position = 0;
+        for(int i=0; i<messageblock.getSize(); i++) {
+            boolean found = false;
+            
+            BitPlane bitplane;
+            do {
+                bitplane = imageblock.getBitPlane(position);
+                if(bitplane.isComplex(threshold)) {
+                    found = true;
+                } else {
+                    position++;
+                }
+            } while(!found);
+            
+            bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
+            System.out.println("Message-" + Integer.toString(i) + " inserted to position " + Integer.toString(position));
+            position++;
+        }
             
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.
         imageblock.convertAllToPCB();

@@ -33,12 +33,12 @@ public class BitBlock {
         }
     }
     
-    public void setBitPlane(int i, int j, BitPlane bitplane) {
-        this.bitplanes[4*i+j].setBitMatrix(bitplane.getBitMatrix());
+    public void setBitPlane(int position, BitPlane bitplane) {
+        this.bitplanes[position].setBitMatrix(bitplane.getBitMatrix());
     }
     
-    public BitPlane getBitPlane(int i, int j) {
-        return this.bitplanes[4*i+j];
+    public BitPlane getBitPlane(int position) {
+        return this.bitplanes[position];
     }
     
     public void convertAllToCGC() {

@@ -56,7 +56,7 @@ public class Bpcs {
         MessageBlock messageblock = new MessageBlock(message);
         
         // 5a. Generate random seed
-        ArrayList randomseed = Tools.generateRandomSeed(key, imageblock.getCol()*imageblock.getRow());
+        ArrayList randomseed = Tools.generateRandomSeed(key);
         
         // 6. Jika blok pesan S tidak lebih kompleks dibandingkan dengan nilai ambang a_0
         // (yaitu termasuk kategori informative region), lakukan konyugasi terhadap S 

@@ -43,17 +43,18 @@ public class Tools {
 //    public static File pngWriter(String path, byte[] bytes){
 //        
 //    }
-    public static ArrayList generateRandomSeed(String key, int imageSizeBlock){
+    public static ArrayList generateRandomSeed(String key){
         ArrayList randomSeed;
         randomSeed = new ArrayList<>();
         int j = 0;
-        for(int i = 0; i < imageSizeBlock; i++){
-            int temp = (int) key.charAt(j) % imageSizeBlock;
-            while(randomSeed.contains(temp) && temp < imageSizeBlock - 1){
+        for(int i = 0; i < key.length(); i++){
+            int temp = (int) key.charAt(j) % key.length();
+            while(randomSeed.contains(temp) && temp < key.length() - 1){
                 temp++;
             }
             if(!randomSeed.contains(temp)){
-                randomSeed.add(i, (int) key.charAt(j) % imageSizeBlock);//.add((int) key.charAt(i) % imageSizeBlock);
+                randomSeed.add(i, temp);//.add((int) key.charAt(i) % imageSizeBlock);
+                j++;
             }
         }
         return randomSeed;

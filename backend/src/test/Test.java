@@ -50,7 +50,8 @@ public class Test {
         // 5. Bagi pesan menjadi segmen-segmen berukuran 64-bit, lalu nyatakan segmen menjadi blok biner berukuran 8 x 8.
         System.out.print("Message :");
         message = scanner.nextLine();
-        MessageBlock messageblock = null; //new MessageBlock(message.charAt(capacity));
+        byte[] bytes = message.getBytes();
+        MessageBlock messageblock = new MessageBlock(bytes);
         
         // 6. Jika blok pesan S tidak lebih kompleks dibandingkan dengan nilai ambang a_0
         // (yaitu termasuk kategori informative region), lakukan konyugasi terhadap S 

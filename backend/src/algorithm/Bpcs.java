@@ -86,7 +86,7 @@ public class Bpcs {
                 }
             } while(!found);
             
-            bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
+            bitplane.setBitMatrix(messageblock.getBitPlane((int)randomseed.get(i)).getBitMatrix());
             position++;
         }
         
@@ -124,6 +124,8 @@ public class Bpcs {
         // 3. Ubah sistem PBC menjadi sistem CGC (Canonical Gray Coding).
         imageblock.convertAllToCGC();
         
+        ArrayList randomseed = Tools.generateRandomSeed(key);
+        
         // 4. Hitung kompleksitas setiap bit-plane. Jika kompleksitasnya di atas nilai ambang
         // 0, maka bit-plane tersebut bagian dari pesan. Tabel konyugasi yang disisipkan juga dibaca untuk
         // melihat proses konyugas yang perlu dilakukan pada tiap blok pesan.
@@ -132,11 +134,16 @@ public class Bpcs {
         ArrayList<BitPlane> messagebitplane = new ArrayList<>();
         for(int i = 0; i < imageblock.getCol() * imageblock.getRow(); i++){    
             if(imageblock.getBitPlane(i).isComplex(threshold)){
-                messagebitplane.add(imageblock.getBitPlane(i));
+                messagebitplane.add(i,imageblock.getBitPlane(i));
             }
         }
+        
         if(!messagebitplane.isEmpty()){
-            message.setBitPlane((BitPlane [])messagebitplane.toArray());
+            ArrayList<BitPlane> messages = new ArrayList<>();
+            for(int i = 0; i < messagebitplane.size(); i++){
+                messages.add(i, messagebitplane.get((int) randomseed.get(i)));
+            }
+            message.setBitPlane((BitPlane [])messages.toArray());
         }
         String filename = null;
         String pathfile = System.getProperty("user.dir") + '\\' + filename;

@@ -1,7 +1,13 @@
 package com.tubes1.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.Normalizer;
+import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 import org.apache.commons.io.FileUtils;
@@ -16,9 +22,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.algoritma.controller.*;
 
+import algorithm.Bpcs;
+
 @Controller
 @RequestMapping("/tubes1")
 public class Tubes1Controller {
+	String path = "/media/daniar/myPassport/WorkPlace/Windows/Steganograph-BPCS/frontend/WebContent/resources/img/";
+	
 	@RequestMapping("/")
 	public ModelAndView tugas1Controller() {
 
@@ -32,30 +42,36 @@ public class Tubes1Controller {
     ServletContext context; 
 	@RequestMapping(value="/execute",  method=RequestMethod.POST)
 	@ResponseBody
-	public String startExecuting(@RequestParam("textInput") String textInput,
-			@RequestParam("fileInput") String fileInput,
+	public String startExecuting(@RequestParam("fileInputUntukDiSisipkan") String filename,
+			@RequestParam("fileInput") String imagename,
 			@RequestParam("operationType") String operationType,
 			@RequestParam("key") String key
 			) {
-
+		VigenereCipherExtended VChipExt = new VigenereCipherExtended();
+		Bpcs objBPCS = new Bpcs();
+		String result = new String("");
+		
 		switch(operationType){
-		case "0": // encryption
-			
-			break;
-		case "1": // decryption
-			
-			break;
-		default: 
+			case "0": // embed file to image
+				try {
+			        String pathEncryptedSecretFIle = VChipExt.encryptTubes1( key, path, filename);
+			        Path file_path = Paths.get(pathEncryptedSecretFIle);
+			        byte[] message;
+					message = Files.readAllBytes(file_path);
+			        objBPCS.insertFile(path+imagename, message, key);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break; 
+			case "1": // get file from image
+				String pathEncryptedSecretFIle = objBPCS.getFile(path+imagename, key);
+				result =  VChipExt.decryptTubes1( key, pathEncryptedSecretFIle, filename);
+				break; 
+			default: 
 		}
-		return "bla bla";
+		return result;
 	}
-	
-	@RequestMapping(value="/upload", method=RequestMethod.GET)
-    public @ResponseBody ModelAndView provideUploadInfo() {
-
-		ModelAndView model = new ModelAndView("upload");
-		return model;
-    }
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
     @ResponseBody
@@ -65,7 +81,7 @@ public class Tubes1Controller {
             try {
             	
                 byte[] bytes = file.getBytes();
-                FileUtils.writeByteArrayToFile(new File("/media/daniar/My Passport/WorkPlace/Windows/Steganograph-BPCS/frontend/WebContent/resources/img/"+name), bytes);
+                FileUtils.writeByteArrayToFile(new File(path+name), bytes);
 //                System.out.println(getClass().getResource());
                
                 return "You successfully uploaded " + name + "!";
@@ -76,5 +92,7 @@ public class Tubes1Controller {
             return "You failed to upload " + name + " because the file was empty.";
         }
     }
+    
+    
     
 }

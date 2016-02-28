@@ -46,8 +46,15 @@ public class Tools {
     public static ArrayList generateRandomSeed(String key, int imageSizeBlock){
         ArrayList randomSeed;
         randomSeed = new ArrayList<>();
-        for(int i = 0; i < key.length(); i++){
-            randomSeed.add((int) key.charAt(i) % imageSizeBlock);
+        int j = 0;
+        for(int i = 0; i < imageSizeBlock; i++){
+            int temp = (int) key.charAt(j) % imageSizeBlock;
+            while(randomSeed.contains(temp) && temp < imageSizeBlock - 1){
+                temp++;
+            }
+            if(!randomSeed.contains(temp)){
+                randomSeed.add(i, (int) key.charAt(j) % imageSizeBlock);//.add((int) key.charAt(i) % imageSizeBlock);
+            }
         }
         return randomSeed;
     }

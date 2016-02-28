@@ -73,7 +73,7 @@ public class BitPlane {
         BitPlane bpConjugate = new BitPlane(this.matrix);
         for(int i=0; i<8; i++) {
             for(int j=0; j<8; j++) {
-                if(i+j%2==0)
+                if((i+j)%2==0)
                     bpConjugate.setBit(i, j, (bpConjugate.getBit(i, j)^1));
             }
         }

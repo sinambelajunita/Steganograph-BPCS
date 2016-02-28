@@ -5,6 +5,9 @@
  */
 package object;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author hp
@@ -26,19 +29,51 @@ public class MessageBlock {
         }
     }
     
-    public MessageBlock(byte[] bytes) {
-        int length = bytes.length;
-        this.size = (length+7)/8;
-        bitplanes = new BitPlane[this.size];
+    public MessageBlock(BitPlane[] bitplanes) {
+        size = bitplanes.length;
+        bitplanes = new BitPlane[size];
         for(int i=0; i<size; i++) {
-            bitplanes[i] = new BitPlane();
+            bitplanes[i].setBitMatrix(bitplanes[i].getBitMatrix());
+        }
+    }
+    
+    public MessageBlock(byte[] bytes) {
+        ArrayList<Boolean> bitbool = new ArrayList<Boolean>();
+        
+        // create array of boolean, so that it insert 0 (false) in front of every 63 boolean;
+        int it = 0;
+        for(int i=0; i<bytes.length; i++) {
+            for (int j=0; j<8; j++) {
+                if(it%64 == 0) {
+                    bitbool.add(Boolean.FALSE);
+                    it++;
+                }
+                bitbool.add(((bytes[i] & (1 << j)) >> j) == 1);
+                it++;
+            }
+        }
+        
+        int total = it;
+        this.size = (total+63)/64; // ceil(total/64)
+        
+        this.bitplanes = new BitPlane[this.size];
+        it=0;
+        for(int i=0; i<size; i++) {
+            this.bitplanes[i] = new BitPlane();
             int[] matrix = new int[8];
             for(int j=0; j<8; j++) {
-                if(8*i+j<bytes.length) {
-                    matrix[j] = (int)(bytes[8*i+j]);
+                matrix[j] = 0;
+                for(int k=0; k<8; k++) {
+                    int bit;
+                    if(it < bitbool.size())
+                        bit = (bitbool.get(it))?1:0;
+                    else
+                        bit = 0;
+                    it++;
+                    matrix[j] = matrix[j] | (bit << k);
                 }
             }
-            bitplanes[i].setBitMatrix(matrix);
+            this.bitplanes[i].setBitMatrix(matrix);
         }
     }
     

@@ -8,8 +8,12 @@ package algorithm;
 import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import object.BitPlane;
 import object.ImageBlock;
@@ -68,8 +72,22 @@ public class Bpcs {
         // 7. Sisipkan segmen pesan 64-bit ke bit-plane yang merupakan noise-like region
         // dengan cara mengganti seluruh bit pada noise-like region tersebut dengan 64-bit pesan).
         // TODO Sisipkan pesan
-        for(int i = 1; i <= messageblock.getSize(); i++){
+        int position = 0;
+        for(int i=0; i<messageblock.getSize(); i++) {
+            boolean found = false;
             
+            BitPlane bitplane;
+            do {
+                bitplane = imageblock.getBitPlane(position);
+                if(bitplane.isComplex(threshold)) {
+                    found = true;
+                } else {
+                    position++;
+                }
+            } while(!found);
+            
+            bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
+            position++;
         }
         
         // 8. Jika bloks S dikonyugasi, simpan pesan pada “conjugation map”.
@@ -86,12 +104,12 @@ public class Bpcs {
         
         // 
         try {
-            ImageIO.write(imageresult,"BMP",new File(imagepath+"temp.bmp"));
+            ImageIO.write(imageresult,"BMP",new File(imagepath+"_temp"));
         } catch (IOException e) {
         }
-        return(imagepath+"temp.bmp");
+        return(imagepath+"_temp.bmp");
     }
-    public String decrypt(String imagepath, String message, String key){
+    public String decrypt(String imagepath, String key){
         // 1. Bagi stego-image menjadi blok 8 x 8 pixel.
         BufferedImage image = null;
         try {
@@ -109,13 +127,29 @@ public class Bpcs {
         // 4. Hitung kompleksitas setiap bit-plane. Jika kompleksitasnya di atas nilai ambang
         // 0, maka bit-plane tersebut bagian dari pesan. Tabel konyugasi yang disisipkan juga dibaca untuk
         // melihat proses konyugas yang perlu dilakukan pada tiap blok pesan.
-        for(int i = 0; i < imageblock.getCol(); i++){
-            for(int j = 0; j < imageblock.getCol(); j++){
-                for (int k = 0; k < 8; k++){
-                    
-                }
+        double threshold = 0.3;
+        MessageBlock message = new MessageBlock();
+        ArrayList<BitPlane> messagebitplane = new ArrayList<>();
+        for(int i = 0; i < imageblock.getCol() * imageblock.getRow(); i++){    
+            if(imageblock.getBitPlane(i).isComplex(threshold)){
+                messagebitplane.add(imageblock.getBitPlane(i));
             }
         }
-        return null;
+        if(!messagebitplane.isEmpty()){
+            message.setBitPlane((BitPlane [])messagebitplane.toArray());
+        }
+        String filename = null;
+        String pathfile = System.getProperty("user.dir") + '\\' + filename;
+        try {
+            try (FileOutputStream fos = new FileOutputStream(pathfile)) {
+                fos.write(message.toBytes());
+                fos.close();
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Bpcs.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Bpcs.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return pathfile;
     }
 }

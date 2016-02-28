@@ -17,7 +17,7 @@ import tools.Tools;
  *
  * @author hp
  */
-public class Test {
+public class TestEncode {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String imagepath;

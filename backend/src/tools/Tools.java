@@ -9,9 +9,11 @@ import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import object.MessageBlock;
 
 /**
  *
@@ -41,6 +43,14 @@ public class Tools {
 //    public static File pngWriter(String path, byte[] bytes){
 //        
 //    }
+    public static ArrayList generateRandomSeed(String key, int imageSizeBlock){
+        ArrayList randomSeed;
+        randomSeed = new ArrayList<>();
+        for(int i = 0; i < key.length(); i++){
+            randomSeed.add((int) key.charAt(i) % imageSizeBlock);
+        }
+        return randomSeed;
+    }
     
     public static double calculatePSNR(BufferedImage imageMatrix1, BufferedImage imageMatrix2) {
         int total = 0;

@@ -102,24 +102,25 @@
                     	
                     <br>
                     <br>
-                    <div class="row " id="compareImage" style="display: none;">
+                    <div class="row " id="compareImage" style="">
                     	<div class="col-md-6 text-center">
-							<div class="image">
+							<div class="row">
 							  	<p>Before</p>
-								<img style="width:300px" class="object-fit_fill" src="../resources/img/aa.jpg">
+								<img style="width:300px; height: 100%;" id="imageBefore" class="object-fit_fill" src="">
 							</div>    	
-							<a type="btn" href="../resources/img/aa.jpg" download="before.jpg" title="ImageName">
+						<!-- 	<a type="btn" href="../resources/img/aa.jpg" download="before.jpg" title="ImageName">
 							  <button type="button"class="btn btn-info">Download</button>
-							</a>    
+							</a>     -->
                     	</div>
                     	<div class="col-md-6  text-center">
-							<div class="image">
-							  	<p>After</p>
-								<img style="width:300px" class="object-fit_fill" src="../resources/img/aa.jpg">
-							</div>      
-							<a type="btn" href="../resources/img/aa.jpg" download="after.jpg" title="ImageName">
-							  <button type="button"class="btn btn-info">Download</button>
-							</a>     
+							<div class=" row">
+							  	<p>After</p>   
+							</div>
+							<div class="row" id="buttonDownload">
+							</div>
+							<div> 
+								<img style="width:300px; height: 100%;" id="imageAfter" class="object-fit_fill" src="">
+							</div>   
                     	</div>
                 </div>
             </div>
@@ -237,8 +238,12 @@
 	    	;
 	    http.send((params));
 	    http.onload = function() {
-		    	alert("Operation is finished!")
+		    	alert(http.responseText)
 	         	if(idOperasi==0){
+	         		 $("#imageBefore").attr('src',"../resources/img/"+fileInput);
+	         		 $("#imageAfter").attr('src',"../resources/img/"+fileInput+".bmp");
+	         		document.getElementById("buttonDownload").innerHTML = "<a type=\"btn\" href=\"../resources/img/"+fileInput+".bmp\" download=\"New"+fileInput+"\" title=\"ImageName\">"
+					  +"<button type=\"button\"class=\"btn btn-info\">Download</button></a>";
 	  	    	  $('#compareImage').css('display', '');
 	         	}else{
 		  	      $('#compareImage').css('display', 'none');

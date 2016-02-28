@@ -54,19 +54,30 @@ public class Tubes1Controller {
 		switch(operationType){
 			case "0": // embed file to image
 				try {
+					String str = filename.length()+" "+filename;
+					byte[] b = str.getBytes();
 			        String pathEncryptedSecretFIle = VChipExt.encryptTubes1( key, path, filename);
 			        Path file_path = Paths.get(pathEncryptedSecretFIle);
 			        byte[] message;
 					message = Files.readAllBytes(file_path);
-			        objBPCS.insertFile(path+imagename, message, key);
+//					byte[] byteTOtal = new byte[message.length + b.length];
+//					System.arraycopy(b, 0, byteTOtal, 0, b.length);
+//					System.arraycopy(message, 0, byteTOtal, b.length, message.length);
+			        result = objBPCS.insertFile(path+imagename, message, key);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				break; 
 			case "1": // get file from image
-				String pathEncryptedSecretFIle = objBPCS.getFile(path+imagename, key);
-				result =  VChipExt.decryptTubes1( key, pathEncryptedSecretFIle, filename);
+				try {
+					byte[] arrayEncryptedByte= objBPCS.getFile(path+imagename, key);
+					FileUtils.writeByteArrayToFile(new File(path+"encryptedResult"+filename), arrayEncryptedByte);
+					result =  VChipExt.decryptTubes1( key, path,"encryptedResult"+filename);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				break; 
 			default: 
 		}

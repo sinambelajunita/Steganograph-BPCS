@@ -18,26 +18,7 @@ import tools.Tools;
  * @author hp
  */
 public class TestEncode {
-	
-	
-	 public static void main(String args[]) throws IOException{
-		  File file= new File("/media/daniar/myPassport/WorkPlace/Windows/Steganograph-BPCS/image/lena512.bmp");
-		  BufferedImage image = ImageIO.read(file);
-		  // Getting pixel color by position x and y 
-		  int clr=  image.getRGB(0,0); 
-		  int  red   = (clr & 0x00ff0000) >> 16;
-		  int  green = (clr & 0x0000ff00) >> 8;
-		  int  blue  =  clr & 0x000000ff;
-		  System.out.println("Clr = "+ clr);
-		  System.out.println("Red Color value = "+ red);
-		  System.out.println("Green Color value = "+ green);
-		  System.out.println("Blue Color value = "+ blue);
-	 }
-//	 Red Color value = 9
-//			 Green Color value = 17
-//			 Blue Color value = 12
-	
-    public static void mainn(String[] args) {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String imagepath;
         String message;
@@ -97,19 +78,21 @@ public class TestEncode {
         ArrayList posgenerated;
         posgenerated = new ArrayList<>();
         BitPlane bitplane;
+        int position;
         for(int i=0; i<messageblock.getSize(); i++) {
             boolean found = false;
             do {
-                int position = generator.nextInt(imageblock.getMaxBitPlanes());
-                System.out.println(position);
+                position = generator.nextInt(imageblock.getMaxBitPlanes());
+                //System.out.println(position);
                 bitplane = imageblock.getBitPlane(position);
-                System.out.println(bitplane.isComplex(threshold));
+                //System.out.println(bitplane.isComplex(threshold));
                 if(bitplane.isComplex(threshold) && !posgenerated.contains(position)) {
                     found = true;
                 }
             } while(!found);
-            
+            posgenerated.add(position);
             bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
+            messageblock.getBitPlane(i).print();
         }
             
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.

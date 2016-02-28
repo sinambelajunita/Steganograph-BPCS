@@ -185,14 +185,14 @@ public class VigenereCipherExtended {
         		
         	}
     		writeEncryptedFileTubes1(myList, filename);
-	        return filePath+filename;
+	        return filePath+"encrypted"+filename;
 	    }
 	
 	    public String decryptTubes1(String key, String filePath, String filename) {
 	        String res = "";
     		ArrayList<Integer> myList = new ArrayList<Integer>();
 
-    		ArrayList<Integer> listInt = readFile(filePath+"encrypted"+filename, "0"); 
+    		ArrayList<Integer> listInt = readFile(filePath+filename, "0"); 
 				int j = 0;
     		for (int i = 0; i < listInt.size(); i++) {
 	            char c = (char) listInt.get(i).intValue();
@@ -202,6 +202,6 @@ public class VigenereCipherExtended {
 	            j = ++j % key.length();
     		}
     		writeDecryptedFileTubes1(myList, filename);
-		    return filePath+"encrypted"+filename;//"�����ג���و���������";
+		    return filePath+"decrypted"+filename;//"�����ג���و���������";
 	    }
 }

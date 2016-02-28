@@ -25,20 +25,38 @@
 						</div>
 						
 						
-						
 						<div class="row" style="margin-top: 5px;">
 	   						<div class="col-md-3" style="margin-top: 5px;">
-	   							Input Teks :
+	   							Input File untuk disisipkan :
 	   						</div>
 	   						
 	   						<div class="col-md-9" >
 						    	<div class="form-group">
-						      		<textarea id="textInput" class="form-control" rows="5"></textarea>
-							        
+							        <form id="formUploadFileUntukDisisipkan" style="margin-top:5px"
+							         method="POST" enctype="multipart/form-data" action="upload">
+										<div class="col-md-2" style="padding-left:0px;">
+											<a class='btn btn-default' href='javascript:;'>
+									            Choose File
+									            <input required type="file" name="file" 
+									            style='position:absolute;z-index:2;top:0;left:0;filter: 
+									            alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+									            opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  
+									            onchange='$("#file-name").html($(this).val().replace(/C:\\fakepath\\/i,""));'>
+									        </a>
+										</div>
+										<div class="col-md-7">
+							    			<textarea required  name="name" id="file-name"  rows="1" maxlength="25"  style="padding: 6px 12px; width:100%;
+							    			 border-radius: 4px;" placeholder="Input a new filename!"></textarea>
+										</div>
+										<div class="col-md-2">
+											<button type="submit"  class="btn btn-default" >Upload </button>
+		                    			</div>
+									</form>
 								</div>
 							
 							</div>
 						</div>
+						
 						
 						
 						<div class="row" style="margin-top: 5px;">
@@ -52,7 +70,7 @@
 							         method="POST" enctype="multipart/form-data" action="upload">
 										<div class="col-md-2" style="padding-left:0px;">
 											<a class='btn btn-default' href='javascript:;'>
-									            Open File
+									            Choose Image
 									            <input required type="file" name="file" 
 									            style='position:absolute;z-index:2;top:0;left:0;filter: 
 									            alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -61,7 +79,7 @@
 									        </a>
 										</div>
 										<div class="col-md-7">
-							    			<textarea required  name="name" id="name"  rows="1" maxlength="25"  style="    padding: 6px 12px; width:100%;
+							    			<textarea required  name="name" id="name"  rows="1" maxlength="25"  style="padding: 6px 12px; width:100%;
 							    			 border-radius: 4px;" placeholder="Input a new filename!"></textarea>
 										</div>
 										<div class="col-md-2">
@@ -75,40 +93,13 @@
 						
 						
 	                    <div class="text-right" style="margin-top:10px">
-							<button type="button" class="btn btn-success" onclick="startExecuting(0)">Encrypt </button>
+							<button type="button" class="btn btn-success" onclick="startExecuting(0)">Embed secret file </button>
 	                    
-							<button type="button" class="btn btn-primary" onclick="startExecuting(1)">Decrypt </button>
+							<button type="button" class="btn btn-primary" onclick="startExecuting(1)">Get secret file </button>
 	                    </div>
                     	
                     	<hr>
                     	
-						<div class="row" style="margin-top: 15px;">
-	   						<div class="col-md-3" style="margin-top: 5px;">
-	   							Message :
-	   						</div>
-	   						
-	   						<div class="col-md-9">
-		   						
-		   						<form role="form">
-							    	<div class="form-group">
-							      	<textarea class="form-control" rows="5" id="result"></textarea>
-							    	</div>
-							  	</form>
-	                    		<div class="text-right">
-								  	<button type="button" class="btn btn-default">Save to File</button>
-								  	<button type="button" onclick="copyResultAsInput()" class="btn btn-info">Copy as Input Teks</button>
-								  	<button type="button" onclick="clearResult()" class="btn btn-danger">Clear</button>
-								</div>
-								
-								<div>
-								
-								
-							</div>
-							
-						</div>
-						
-						
-                    </div>
                     <br>
                     <br>
                     <div class="row " id="compareImage" style="display: none;">
@@ -131,6 +122,8 @@
 							</a>     
                     	</div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </header>
@@ -161,12 +154,12 @@
 	    document.getElementById("result").value = "";
   	    $('#name').attr('placeholder', 'file is ready!');
 	}
+	
 
-
- 	$('#formUploadFile').submit(function(event){
+ 	$('#formUploadFileUntukDisisipkan').submit(function(event){
 	    $.ajax({
-	      url: $('#formUploadFile').attr('action'),
-	      data : new FormData($("#formUploadFile")[0]),
+	      url: $('#formUploadFileUntukDisisipkan').attr('action'),
+	      data : new FormData($("#formUploadFileUntukDisisipkan")[0]),
 	      dataType: 'text',
 	      enctype: 'multipart/form-data',
 	      processData: false,
@@ -180,6 +173,22 @@
 	    return false;
 	}); 
 	
+	$('#formUploadFile').submit(function(event){
+	    $.ajax({
+	      url: $('#formUploadFile').attr('action'),
+	      data : new FormData($("#formUploadFile")[0]),
+	      dataType: 'text',
+	      enctype: 'multipart/form-data',
+	      processData: false,
+	      contentType: false,
+	      type: 'POST',
+	      success:  function(data) {
+	    	  alert('Image is uploaded!');
+	    	  $('#upload-file-info').css('background-color', '#5CB85C');
+	      }
+	    });
+	    return false;
+	}); 
 	
 	function copyResultAsInput(){
 	    result = document.getElementById("result").value;
@@ -197,12 +206,11 @@
 	}
 	
 	$(".dropdown-menu li a").click(function(){
-		
-		  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-		  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-		});
+	  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+	  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+	});
 	
-	 function startExecuting(idOperasi) {
+	function startExecuting(idOperasi) {
 	    var http = new XMLHttpRequest();
 	    operationType = idOperasi;
 
@@ -212,13 +220,9 @@
 	    	return false;
 	    }
 	    
-	    textInput = document.getElementById("textInput").value;
 	    fileInput = document.getElementById("name").innerHTML;
-	    if(textInput.length == 0 ){
-	    	alert("Masukkan input teks yang Anda inginkan!")
-	    	return false;
-	    }
-		
+	    fileInputUntukDiSisipkan = document.getElementById("file-name").innerHTML;
+	    
 	    if( fileInput.length == 0){
 	    	alert("Masukkan input gambar!")
 	    	return false;
@@ -226,14 +230,14 @@
 	    
 	    http.open("POST", "/KriptografiProject/tubes1/execute", true);
 	    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	    var params = "textInput=" +textInput 
-	    	+ "&fileInput="+fileInput
+	    var params = "&fileInput="+fileInput
 	    	+ "&operationType="+operationType
+	    	+ "&fileInputUntukDiSisipkan="+fileInputUntukDiSisipkan
 	    	+ "&key="+key
 	    	;
 	    http.send((params));
 	    http.onload = function() {
-	         	document.getElementById('result').value = http.responseText;	
+		    	alert("Operation is finished!")
 	         	if(idOperasi==0){
 	  	    	  $('#compareImage').css('display', '');
 	         	}else{

@@ -25,7 +25,7 @@ import tools.Tools;
  * @author user
  */
 public class Bpcs {
-    public String encrypt(String imagepath, byte[] message, String key){
+    public String insertFile(String imagepath, byte[] message, String key){
         ArrayList conjugationmap;
         conjugationmap = new ArrayList<>();
         BufferedImage image = null;
@@ -110,7 +110,7 @@ public class Bpcs {
         return(imagepath+"_temp.bmp");
     }
     
-    public String decrypt(String imagepath, String key){
+    public String getFile(String imagepath, String key){
         // 1. Bagi stego-image menjadi blok 8 x 8 pixel.
         BufferedImage image = null;
         try {

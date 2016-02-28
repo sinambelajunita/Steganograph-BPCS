@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class VigenereCipherExtended {
-	
+
+	String path = "/media/daniar/myPassport/WorkPlace/Windows/Steganograph-BPCS/frontend/WebContent/resources/img/";
 
 	public ArrayList<Integer> readFile(String path, String inputModel){
 		FileInputStream fis = null;
@@ -51,7 +52,42 @@ public class VigenereCipherExtended {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
+	}
+	
+	public void writeEncryptedFileTubes1(ArrayList<Integer> myList , String filename){
+		BufferedOutputStream bos;
+		try {
+			bos = new BufferedOutputStream(
+			        new FileOutputStream(new File(path + "encrypted"+filename)));
+			for (int i = 0; i < myList.size(); i++) {
+            	bos.write(myList.get(i).intValue());
+    		}
+	        bos.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeDecryptedFileTubes1(ArrayList<Integer> myList , String filename){
+		BufferedOutputStream bos;
+		try {
+			bos = new BufferedOutputStream(
+			        new FileOutputStream(new File(path + "decrypted"+filename)));
+			for (int i = 0; i < myList.size(); i++) {
+            	bos.write(myList.get(i).intValue());
+    		}
+	        bos.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	 public String encrypt(String text, final String key, String path, String inputModel, String resultModel) {
@@ -131,6 +167,41 @@ public class VigenereCipherExtended {
   		        }
 	    	}
 			writeFile(myList);
-		    return res;//"ÚÊÕÎÏ×’ÍÈÛÙˆÐçè×ÐÆåÆà";
+		    return res;//"ï¿½ï¿½ï¿½ï¿½ï¿½×’ï¿½ï¿½ï¿½Ùˆï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    }
+	    
+	    public String encryptTubes1( String key, String filePath, String filename) {
+	        String res = "";        
+    		ArrayList<Integer> myList = new ArrayList<Integer>();
+        	
+    		ArrayList<Integer> listInt = readFile(filePath+filename, "0"); 
+			int j = 0;
+    		for (int i = 0; i < listInt.size(); i++) {
+	            char c = (char) listInt.get(i).intValue();
+            	int idx = ((c + key.charAt(j)) % 256 );
+            	myList.add(idx);
+	            res += (char)idx;
+	            j = ++j % key.length();
+        		
+        	}
+    		writeEncryptedFileTubes1(myList, filename);
+	        return filePath+filename;
+	    }
+	
+	    public String decryptTubes1(String key, String filePath, String filename) {
+	        String res = "";
+    		ArrayList<Integer> myList = new ArrayList<Integer>();
+
+    		ArrayList<Integer> listInt = readFile(filePath+"encrypted"+filename, "0"); 
+				int j = 0;
+    		for (int i = 0; i < listInt.size(); i++) {
+	            char c = (char) listInt.get(i).intValue();
+            	int idx = ((c - key.charAt(j) + 256) % 256 );
+	            	myList.add(idx);
+	            res += (char)idx;
+	            j = ++j % key.length();
+    		}
+    		writeDecryptedFileTubes1(myList, filename);
+		    return filePath+"encrypted"+filename;//"ï¿½ï¿½ï¿½ï¿½ï¿½×’ï¿½ï¿½ï¿½Ùˆï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	    }
 }

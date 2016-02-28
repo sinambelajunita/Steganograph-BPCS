@@ -26,6 +26,7 @@ public class BitPlane {
     }
     
     public BitPlane(int[] matrix) {
+        this.matrix = new int[8];
         System.arraycopy(matrix, 0, this.matrix, 0, 8);
         noiselike = false;
     }
@@ -59,7 +60,9 @@ public class BitPlane {
     }
     
     public void setBitMatrix(int[] matrix) {
+        this.matrix = new int[8];
         System.arraycopy(matrix, 0, this.matrix, 0, 8);
+        noiselike = false;
     }
     
     public int[] getBitMatrix() {

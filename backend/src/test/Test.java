@@ -3,12 +3,15 @@ package test;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import object.BitPlane;
 import object.ImageBlock;
 import object.MessageBlock;
+import tools.Tools;
 
 /**
  *
@@ -19,6 +22,7 @@ public class Test {
         Scanner scanner = new Scanner(System.in);
         String imagepath;
         String message;
+        String key;
 
         System.out.print("Path to stego-image :");
         imagepath = scanner.nextLine();
@@ -34,7 +38,6 @@ public class Test {
         //1. Bagi cover-image menjadi blok 8 x 8 pixel.
         //2. Bentuk setiap blok 8 x 8 pixel menjadi sistem PBC yang terdiri dari 24 buah bit-plane.
         ImageBlock imageblock = new ImageBlock(image);
-        
         
         // 3. Ubah sistem PBC menjadi sistem CGC(Canonical Gray Coding).
         imageblock.convertAllToCGC();
@@ -53,6 +56,9 @@ public class Test {
         byte[] bytes = message.getBytes();
         MessageBlock messageblock = new MessageBlock(bytes);
         
+        System.out.print("Key :");
+        key = scanner.nextLine();
+        
         // 6. Jika blok pesan S tidak lebih kompleks dibandingkan dengan nilai ambang a_0
         // (yaitu termasuk kategori informative region), lakukan konyugasi terhadap S 
         // untuk mendapatkan S* yang lebih kompleks.
@@ -67,23 +73,24 @@ public class Test {
         
         // 7. Sisipkan segmen pesan 64-bit ke bit-plane yang merupakan noise-like region
         // dengan cara mengganti seluruh bit pada noise-like region tersebut dengan 64-bit pesan).
-        int position = 0;
+        int seed = Tools.generateRandomSeed2(key);
+        Random generator = new Random(seed);
+        ArrayList posgenerated;
+        posgenerated = new ArrayList<>();
+        BitPlane bitplane;
         for(int i=0; i<messageblock.getSize(); i++) {
             boolean found = false;
-            
-            BitPlane bitplane;
             do {
+                int position = generator.nextInt(imageblock.getMaxBitPlanes());
+                System.out.println(position);
                 bitplane = imageblock.getBitPlane(position);
-                if(bitplane.isComplex(threshold)) {
+                System.out.println(bitplane.isComplex(threshold));
+                if(bitplane.isComplex(threshold) && !posgenerated.contains(position)) {
                     found = true;
-                } else {
-                    position++;
                 }
             } while(!found);
             
             bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
-            System.out.println("Message-" + Integer.toString(i) + " inserted to position " + Integer.toString(position));
-            position++;
         }
             
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.
@@ -93,7 +100,6 @@ public class Test {
         // Konversi ke bitmap
         BufferedImage imageresult = imageblock.getBufferedImage();
         
-        // 
         try {
             ImageIO.write(imageresult,"BMP",new File(imagepath+".bmp"));
         } catch (IOException e) {

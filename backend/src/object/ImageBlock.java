@@ -60,9 +60,8 @@ public class ImageBlock {
     public BitPlane getBitPlane(int position) {
         int posInner = position%32;
         int posOuter = position/32;
-        int posOuterRow = position/this.ncol;
-        int posOuterCol = position%this.ncol;
-        
+        int posOuterRow = posOuter/this.ncol;
+        int posOuterCol = posOuter%this.ncol;
         return bitblocks[posOuterRow][posOuterCol].getBitPlane(posInner);
     }
     
@@ -98,5 +97,9 @@ public class ImageBlock {
     
     public int getCol() {
         return this.ncol;
+    }
+    
+    public int getMaxBitPlanes() {
+        return nrow*ncol*32;
     }
 }

@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -58,6 +59,14 @@ public class Tools {
             }
         }
         return randomSeed;
+    }
+    
+    public static int generateRandomSeed2(String key){
+        int seed = 0;
+        for(int i=0; i<key.length(); i++) {
+            seed = seed + (int)(key.charAt(i));
+        }
+        return seed;
     }
     
     public static double calculatePSNR(BufferedImage imageMatrix1, BufferedImage imageMatrix2) {

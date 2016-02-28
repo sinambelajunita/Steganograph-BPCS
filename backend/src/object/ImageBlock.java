@@ -57,6 +57,15 @@ public class ImageBlock {
         return imageresult;
     }
     
+    public BitPlane getBitPlane(int position) {
+        int posInner = position%32;
+        int posOuter = position/32;
+        int posOuterRow = position/this.ncol;
+        int posOuterCol = position%this.ncol;
+        
+        return bitblocks[posOuterRow][posOuterCol].getBitPlane(posInner);
+    }
+    
     public int checkAllNoiseLike(double threshold) {
         int capacity = 0;
         for(int row=0; row<this.nrow; row++) {

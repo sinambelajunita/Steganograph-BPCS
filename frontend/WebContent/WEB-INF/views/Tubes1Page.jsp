@@ -96,6 +96,8 @@
 							<button type="button" class="btn btn-success" onclick="startExecuting(0)">Embed secret file </button>
 	                    
 							<button type="button" class="btn btn-primary" onclick="startExecuting(1)">Get secret file </button>
+							<button type="button" class="btn btn-info" onclick="compareImage()">Compare image </button>
+							<button type="button" class="btn btn-info" onclick="checkCapacity()">Check capacity </button>
 	                    </div>
                     	
                     	<hr>
@@ -108,21 +110,20 @@
 							  	<p>Before</p>
 								<img style="width:300px; height: 100%;" id="imageBefore" class="object-fit_fill" src="">
 							</div>    	
-						<!-- 	<a type="btn" href="../resources/img/aa.jpg" download="before.jpg" title="ImageName">
-							  <button type="button"class="btn btn-info">Download</button>
-							</a>     -->
                     	</div>
                     	<div class="col-md-6  text-center">
 							<div class=" row">
 							  	<p>After</p>   
 							</div>
-							<div class="row" id="buttonDownload">
-							</div>
 							<div> 
 								<img style="width:300px; height: 100%;" id="imageAfter" class="object-fit_fill" src="">
 							</div>   
+							<div class="row" id="buttonDownload">
+							</div>
                     	</div>
                 </div>
+                <div class="row" id="buttonDownloadSecretFile">
+				</div>
             </div>
         </div>
             </div>
@@ -245,9 +246,53 @@
 	         		document.getElementById("buttonDownload").innerHTML = "<a type=\"btn\" href=\"../resources/img/"+fileInput+".bmp\" download=\"New"+fileInput+"\" title=\"ImageName\">"
 					  +"<button type=\"button\"class=\"btn btn-info\">Download</button></a>";
 	  	    	  $('#compareImage').css('display', '');
-	         	}else{
+	         	}else{ 
 		  	      $('#compareImage').css('display', 'none');
+         		document.getElementById("buttonDownloadSecretFile").innerHTML = "<a type=\"btn\" href='"+http.responseText+"' download=\""+fileInputUntukDiSisipkan+"\" title=\"ImageName\">"
+				  +"<button type=\"button\"class=\"btn btn-info\">Download Secret File</button></a>";
 	         	}
+	      }
+	    }
+	
+	function compareImage() {
+	    var http = new XMLHttpRequest();	     
+	    
+	    fileInput = document.getElementById("name").innerHTML;
+	    
+	    if( fileInput.length == 0){
+	    	alert("Masukkan input gambar!")
+	    	return false;
+	    }
+	    
+	    http.open("POST", "/KriptografiProject/tubes1/compareimage", true);
+	    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	    var params = "&fileInput="+fileInput
+	    	+ "&operationType="+operationType
+	    	;
+	    http.send((params));
+	    http.onload = function() {
+		    	alert(http.responseText);
+	      }
+	    }
+	
+	function checkCapacity() {
+	    var http = new XMLHttpRequest();	     
+	    
+	    fileInput = document.getElementById("name").innerHTML;
+	    
+	    if( fileInput.length == 0){
+	    	alert("Masukkan input gambar!")
+	    	return false;
+	    }
+	    
+	    http.open("POST", "/KriptografiProject/tubes1/checkcapacity", true);
+	    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	    var params = "&fileInput="+fileInput
+	    	+ "&operationType="+operationType
+	    	;
+	    http.send((params));
+	    http.onload = function() {
+		    	alert(http.responseText);
 	      }
 	    }
 	

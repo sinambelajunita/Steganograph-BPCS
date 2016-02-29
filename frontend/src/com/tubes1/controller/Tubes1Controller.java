@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.algoritma.controller.*;
+import com.tugas1.controller.InvalidSizeException;
 
 import algorithm.Bpcs;
 
@@ -40,6 +41,7 @@ public class Tubes1Controller {
 
 	@Autowired
     ServletContext context; 
+	
 	@RequestMapping(value="/execute",  method=RequestMethod.POST)
 	@ResponseBody
 	public String startExecuting(@RequestParam("fileInputUntukDiSisipkan") String filename,
@@ -65,8 +67,9 @@ public class Tubes1Controller {
 //					System.arraycopy(message, 0, byteTOtal, b.length, message.length);
 			        result = objBPCS.insertFile(path+imagename, message, key);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					result = e.getMessage();
+				} catch (InvalidSizeException e) {
+					result = e.getMessage();
 				}
 				break; 
 			case "1": // get file from image
@@ -84,6 +87,28 @@ public class Tubes1Controller {
 		return result;
 	}
 
+	@RequestMapping(value="/compareimage",  method=RequestMethod.POST)
+	@ResponseBody
+	public String compareImage(
+			@RequestParam("fileInput") String imagename
+			) {
+		VigenereCipherExtended VChipExt = new VigenereCipherExtended();
+		Bpcs objBPCS = new Bpcs();
+		String result = objBPCS.compareImage(path+imagename, path+imagename+".bmp");
+		return result;
+	}
+	
+	@RequestMapping(value="/checkcapacity",  method=RequestMethod.POST)
+	@ResponseBody
+	public String checkCapacity( @RequestParam("fileInput") String imagename
+			) {
+		VigenereCipherExtended VChipExt = new VigenereCipherExtended();
+		Bpcs objBPCS = new Bpcs();
+		String result = objBPCS.checkCapacity(path+imagename);
+		return result;
+	}
+	
+	
     @RequestMapping(value="/upload", method=RequestMethod.POST)
     @ResponseBody
     public String handleFileUpload(@RequestParam("name") String name,

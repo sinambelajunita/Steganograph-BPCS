@@ -88,7 +88,11 @@ public class Bpcs {
             } while(!found);
             posgenerated.add(position);
             bitplane.setBitMatrix(messageblock.getBitPlane(i).getBitMatrix());
+            
+            // DEBUG
+            System.out.println(i + " " + position);
             messageblock.getBitPlane(i).print();
+            System.out.println();
         }
             
         // 10. Ubah stego-image dari sistem CGC menjadi sistem PBC.
@@ -131,6 +135,7 @@ public class Bpcs {
         ArrayList bitplanes = new ArrayList();
         Boolean stop = false;
         int position;
+        int i=0;
         do {
             Boolean found = false;
             do {
@@ -145,7 +150,13 @@ public class Bpcs {
             
             posgenerated.add(position);
             
+            
+            // DEBUG
+            System.out.println(i + " " + position);
+            i++;
             bitplane.print();
+            System.out.println();
+            
             
             if(bitplane.isConjugated()) {
                 bitplane.setBitMatrix(bitplane.getConjugate().getBitMatrix());

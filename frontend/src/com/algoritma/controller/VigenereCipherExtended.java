@@ -202,6 +202,6 @@ public class VigenereCipherExtended {
 	            j = ++j % key.length();
     		}
     		writeDecryptedFileTubes1(myList, filename);
-		    return filePath+"decrypted"+filename;//"�����ג���و���������";
+		    return "decrypted"+filename;//"�����ג���و���������";
 	    }
 }

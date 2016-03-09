@@ -2,12 +2,14 @@ package com.tubes1.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.servlet.ServletContext;
 import org.apache.commons.io.FileUtils;
@@ -24,6 +26,7 @@ import com.algoritma.controller.*;
 import com.tugas1.controller.InvalidSizeException;
 
 import algorithm.Bpcs;
+import object.MessageBlock;
 
 @Controller
 @RequestMapping("/tubes1")
@@ -46,11 +49,13 @@ public class Tubes1Controller {
 	@ResponseBody
 	public String startExecuting(@RequestParam("fileInputUntukDiSisipkan") String filename,
 			@RequestParam("fileInput") String imagename,
+			@RequestParam("capacity") String strCapacity,
 			@RequestParam("operationType") String operationType,
 			@RequestParam("key") String key
 			) {
 		VigenereCipherExtended VChipExt = new VigenereCipherExtended();
 		Bpcs objBPCS = new Bpcs();
+		int capacity = Integer.parseInt(strCapacity);
 		String result = new String("");
 		
 		switch(operationType){
@@ -62,10 +67,15 @@ public class Tubes1Controller {
 			        Path file_path = Paths.get(pathEncryptedSecretFIle);
 			        byte[] message;
 					message = Files.readAllBytes(file_path);
-//					byte[] byteTOtal = new byte[message.length + b.length];
-//					System.arraycopy(b, 0, byteTOtal, 0, b.length);
-//					System.arraycopy(message, 0, byteTOtal, b.length, message.length);
-			        result = objBPCS.insertFile(path+imagename, message, key);
+//					
+					byte[] bytes = message;
+			        MessageBlock messageblock = new MessageBlock(bytes);
+			        int messageSize = messageblock.getSize() ;
+			        if(messageSize > capacity){
+			        	result = "300";
+			        }else{
+			        	result = objBPCS.insertFile(imagename, path, message, key);
+			        }
 				} catch (IOException e) {
 					result = e.getMessage();
 				} catch (InvalidSizeException e) {
@@ -74,8 +84,15 @@ public class Tubes1Controller {
 				break; 
 			case "1": // get file from image
 				try {
-					byte[] arrayEncryptedByte= objBPCS.getFile(path+imagename, key);
-					FileUtils.writeByteArrayToFile(new File(path+"encryptedResult"+filename), arrayEncryptedByte);
+			        Bpcs bpcs = new Bpcs();
+			        byte[] bytes = bpcs.getFile(path+imagename, key);
+//			        String file_path = "/media/daniar/myPassport/WorkPlace/Windows/Steganograph-BPCS/frontend/WebContent/resources/img/encryptedfileSecret.txt";//scanner.nextLine();
+//			        Path path2 = Paths.get(file_path);
+
+//					byte[] message = Files.readAllBytes(path2);
+			        // input message file path
+			        FileUtils.writeByteArrayToFile(new File(path+"encryptedResult"+filename), bytes);
+			        
 					result =  VChipExt.decryptTubes1( key, path,"encryptedResult"+filename);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -94,7 +111,7 @@ public class Tubes1Controller {
 			) {
 		VigenereCipherExtended VChipExt = new VigenereCipherExtended();
 		Bpcs objBPCS = new Bpcs();
-		String result = objBPCS.compareImage(path+imagename, path+imagename+".bmp");
+		String result = objBPCS.compareImage(path+imagename, path+"New"+imagename);
 		return result;
 	}
 	

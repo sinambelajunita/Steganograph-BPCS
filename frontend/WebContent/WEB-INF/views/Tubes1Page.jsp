@@ -213,7 +213,6 @@
 	});
 	
 	function startExecuting(idOperasi) {
-	    var http = new XMLHttpRequest();
 	    operationType = idOperasi;
 
 	    key = document.getElementById("key").value;
@@ -230,28 +229,47 @@
 	    	return false;
 	    }
 	    
-	    http.open("POST", "/KriptografiProject/tubes1/execute", true);
-	    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	    var params = "&fileInput="+fileInput
-	    	+ "&operationType="+operationType
-	    	+ "&fileInputUntukDiSisipkan="+fileInputUntukDiSisipkan
-	    	+ "&key="+key
-	    	;
-	    http.send((params));
-	    http.onload = function() {
-		    	alert(http.responseText)
-	         	if(idOperasi==0){
-	         		 $("#imageBefore").attr('src',"../resources/img/"+fileInput);
-	         		 $("#imageAfter").attr('src',"../resources/img/"+fileInput+".bmp");
-	         		document.getElementById("buttonDownload").innerHTML = "<a type=\"btn\" href=\"../resources/img/"+fileInput+".bmp\" download=\"New"+fileInput+"\" title=\"ImageName\">"
-					  +"<button type=\"button\"class=\"btn btn-info\">Download</button></a>";
-	  	    	  $('#compareImage').css('display', '');
-	         	}else{ 
-		  	      $('#compareImage').css('display', 'none');
-         		document.getElementById("buttonDownloadSecretFile").innerHTML = "<a type=\"btn\" href='"+http.responseText+"' download=\""+fileInputUntukDiSisipkan+"\" title=\"ImageName\">"
-				  +"<button type=\"button\"class=\"btn btn-info\">Download Secret File</button></a>";
-	         	}
+	    
+ 		var http1 = new XMLHttpRequest();	     
+	    
+	    http1.open("POST", "/KriptografiProject/tubes1/checkcapacity", true);
+	    http1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	    var params = "&fileInput="+fileInput;
+	    http1.send((params));
+	    http1.onload = function() {
+		    	capacity = http1.responseText;
+		    	var http = new XMLHttpRequest();
+			    http.open("POST", "/KriptografiProject/tubes1/execute", true);
+			    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			    var params = "&fileInput="+fileInput
+		    		+ "&capacity="+capacity
+			    	+ "&operationType="+operationType
+			    	+ "&fileInputUntukDiSisipkan="+fileInputUntukDiSisipkan
+			    	+ "&key="+key
+			    	;
+			    http.send((params));
+			    http.onload = function() {
+			    	
+			    	if(http.responseText == "300"){
+			    		alert("The size of your secret file is too large!");
+			    	}else{
+				    	alert(http.responseText);
+				    	if(idOperasi==0){
+			         		 $("#imageBefore").attr('src',"../resources/img/"+fileInput);
+			         		 $("#imageAfter").attr('src',"../resources/img/New"+fileInput);
+			         		document.getElementById("buttonDownload").innerHTML = "<a type=\"btn\" href=\"../resources/img/New"+fileInput+"\" download=\"New"+fileInput+"\" title=\"ImageName\">"
+							  +"<button type=\"button\"class=\"btn btn-info\">Download</button></a>";
+			  	    	  $('#compareImage').css('display', '');
+			  	    	document.getElementById("buttonDownloadSecretFile").innerHTML = "";
+			         	}else{ 
+				  	      $('#compareImage').css('display', 'none');
+		         		document.getElementById("buttonDownloadSecretFile").innerHTML = "<a type=\"btn\" href=\"../resources/img/"+http.responseText+"\"  download=\""+http.responseText+"\" title=\"ImageName\">"
+						  +"<button type=\"button\"class=\"btn btn-info\">Download Secret File</button></a>";
+			         	}
+			    	}
+		      	}
 	      }
+		    
 	    }
 	
 	function compareImage() {
@@ -267,14 +285,12 @@
 	    http.open("POST", "/KriptografiProject/tubes1/compareimage", true);
 	    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	    var params = "&fileInput="+fileInput
-	    	+ "&operationType="+operationType
 	    	;
 	    http.send((params));
 	    http.onload = function() {
 		    	alert(http.responseText);
 	      }
 	    }
-	
 	function checkCapacity() {
 	    var http = new XMLHttpRequest();	     
 	    
@@ -288,11 +304,10 @@
 	    http.open("POST", "/KriptografiProject/tubes1/checkcapacity", true);
 	    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	    var params = "&fileInput="+fileInput
-	    	+ "&operationType="+operationType
 	    	;
 	    http.send((params));
 	    http.onload = function() {
-		    	alert(http.responseText);
+		    	alert(http.responseText+" bitplanes");
 	      }
 	    }
 	

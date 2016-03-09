@@ -7,6 +7,7 @@ package algorithm;
 
 import java.awt.List;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -44,11 +45,11 @@ public class Bpcs  {
         double threshold = 0.3;
         int capacity = imageblock.checkAllNoiseLike(threshold);
         
-        return capacity+" bitplane ";
+        return ""+capacity;
 	}
 	
 	public String compareImage(String imagepath1, String imagepath2) {
-		int total = 0;
+		double total = 0;
         int row;
         int col;
         
@@ -74,21 +75,40 @@ public class Bpcs  {
             	int rgb1 = imageMatrix1.getRGB(j,i);
             	int rgb2 = imageMatrix2.getRGB(j,i);
             	
-                total += (rgb1 - rgb2)*(rgb1 - rgb2);
+            	int r1 = (rgb1 & (0xff));
+            	int g1 = ((rgb1 >> 8) & (0xff));
+            	int b1 = ((rgb1 >> 16) & (0xff));
+            	int a1 = ((rgb1 >> 24) & (0xff));
+            	
+            	int r2 = (rgb2 & (0xff));
+            	int g2 = ((rgb2 >> 8) & (0xff));
+            	int b2 = ((rgb2 >> 16) & (0xff));
+            	int a2 = ((rgb2 >> 24) & (0xff));
+            	
+            	
+                total += (r1 - r2)*(r1 - r2);
+                total += (g1 - g2)*(g1 - g2);
+                total += (b1 - b2)*(b1 - b2);
+                total += (a1 - a2)*(a1 - a2);
+                
             }
         }
 
-        double rms = Math.sqrt(total/(row*col));
-        double result = 20*Math.log10((1<<32)/rms);
+        double rms = Math.sqrt( total/(4*row*col));
+        double result = 20*Math.log10(256/rms);
         
-        return "PSNR kedua image tersebut adalah : " + Double.toString(result);
+        return " PSNR kedua image tersebut adalah : " + Double.toString(result);
 		
 	}
 	
-    public String insertFile(String imagepath, byte[] message, String key) throws InvalidSizeException{ 
+	
+	
+	
+	
+    public String insertFile(String imageName, String imagepath, byte[] message, String key) throws InvalidSizeException{ 
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File(imagepath));
+            image = ImageIO.read(new File(imagepath+imageName));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,10 +179,10 @@ public class Bpcs  {
         // Konversi ke bitmap
         BufferedImage imageresult = imageblock.getBufferedImage();
         
-        String newimagepath = imagepath+".bmp";
+        String newimagepath = imagepath+"New"+imageName;
         try {
             
-            ImageIO.write(imageresult,"BMP",new File(newimagepath));
+            ImageIO.write(imageresult,"PNG",new File(newimagepath));
         } catch (IOException e) {
         }
         
